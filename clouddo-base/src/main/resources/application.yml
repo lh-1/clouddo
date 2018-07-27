@@ -6,9 +6,9 @@ spring:
   application:
     name: api-base
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/clouddo?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://127.0.0.1:3307/clouddo?useUnicode=true&characterEncoding=utf8
     username: root
-    password: root
+    password: 888888
 mybatis:
   mapper-locations: mapper/**Mapper.xml
   configuration:

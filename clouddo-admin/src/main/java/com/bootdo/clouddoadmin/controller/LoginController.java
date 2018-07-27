@@ -10,11 +10,10 @@ import com.bootdo.clouddocommon.context.FilterContextHandler;
 import com.bootdo.clouddocommon.dto.LoginDTO;
 import com.bootdo.clouddocommon.dto.UserToken;
 import com.bootdo.clouddocommon.utils.JwtUtils;
-import com.bootdo.clouddocommon.utils.R;
+import com.bootdo.clouddocommon.utils.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -38,41 +37,41 @@ public class LoginController {
 
     @Log("登录")
     @PostMapping("/login")
-    R login(@Valid @RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) {
+    ResponseResult login(@Valid @RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) {
         String username = loginDTO.getUsername().trim();
         String password = loginDTO.getPwd().trim();
         password = MD5Utils.encrypt(username, password);
         Map<String, Object> param = new HashMap<>();
         param.put("username", username);
         List<UserDO> userDOs = userService.list(param);
-        if(userDOs.size()<1){
-            return R.error("用户或密码错误");
+        if (userDOs.size() < 1) {
+            return ResponseResult.error("用户或密码错误");
         }
         UserDO userDO = userDOs.get(0);
         if (null == userDO || !userDO.getPassword().equals(password)) {
-            return R.error("用户或密码错误");
+            return ResponseResult.error("用户或密码错误");
         }
         UserToken userToken = new UserToken(userDO.getUsername(), userDO.getUserId().toString(), userDO.getName());
-        String token="";
+        String token = "";
         try {
-            token = JwtUtils.generateToken(userToken, 2*60*60*1000);
+            token = JwtUtils.generateToken(userToken, 2 * 60 * 60 * 1000);
         } catch (Exception e) {
             e.printStackTrace();
         }
         //首先清除用户缓存权限
         menuService.clearCache(userDO.getUserId());
         // String token = tokenService.createToken(userDO.getUserId());
-        return R.ok("登录成功")
-                .put("token", token).put("user",userDO)
-                .put("perms",menuService.PermsByUserId(userDO.getUserId()))
-                .put("router",menuService.RouterDTOsByUserId(userDO.getUserId()));
+        return ResponseResult.ok("登录成功")
+                .put("token", token).put("user", userDO)
+                .put("perms", menuService.PermsByUserId(userDO.getUserId()))
+                .put("router", menuService.RouterDTOsByUserId(userDO.getUserId()));
     }
 
 
     @RequestMapping("/logout")
-    R logout(HttpServletRequest request, HttpServletResponse response) {
+    ResponseResult logout(HttpServletRequest request, HttpServletResponse response) {
         menuService.clearCache(Long.parseLong(FilterContextHandler.getUserID()));
-        return R.ok();
+        return ResponseResult.ok();
     }
 
 

@@ -6,7 +6,7 @@ import com.bootdo.clouddoadmin.service.MenuService;
 import com.bootdo.clouddocommon.annotation.Log;
 import com.bootdo.clouddocommon.context.FilterContextHandler;
 import com.bootdo.clouddocommon.dto.MenuDTO;
-import com.bootdo.clouddocommon.utils.R;
+import com.bootdo.clouddocommon.utils.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,23 +47,23 @@ public class MenuController {
     }
 
     @PutMapping()
-    R update(@RequestBody MenuDO menuDO){
+    ResponseResult update(@RequestBody MenuDO menuDO){
         if(menuService.update(menuDO)>0){
-            return R.ok();
+            return ResponseResult.ok();
         }
-        return  R.error();
+        return  ResponseResult.error();
     }
     @PostMapping
-    R save(@RequestBody MenuDO menuDO){
-        return R.operate(menuService.save(menuDO)>0);
+    ResponseResult save(@RequestBody MenuDO menuDO){
+        return ResponseResult.operate(menuService.save(menuDO)>0);
     }
 
     @DeleteMapping()
-    R remove(Long id){
+    ResponseResult remove(Long id){
         if(menuService.remove(id)>0){
-            return R.ok();
+            return ResponseResult.ok();
         }
-        return R.error();
+        return ResponseResult.error();
     }
 
     @GetMapping("userMenus")
@@ -81,12 +81,12 @@ public class MenuController {
     }
 
     @GetMapping("clearCache")
-    R clearCache(){
+    ResponseResult clearCache(){
         Boolean flag = menuService.clearCache(Long.parseLong(FilterContextHandler.getUserID()));
         if (flag){
-            return  R.ok();
+            return  ResponseResult.ok();
         }
-        return R.error();
+        return ResponseResult.error();
     }
 
     /**

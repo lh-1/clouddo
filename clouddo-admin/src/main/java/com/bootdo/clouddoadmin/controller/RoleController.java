@@ -1,11 +1,10 @@
 package com.bootdo.clouddoadmin.controller;
 
 import com.bootdo.clouddoadmin.domain.RoleDO;
-import com.bootdo.clouddoadmin.domain.UserDO;
 import com.bootdo.clouddoadmin.service.RoleService;
 import com.bootdo.clouddocommon.utils.PageUtils;
 import com.bootdo.clouddocommon.utils.Query;
-import com.bootdo.clouddocommon.utils.R;
+import com.bootdo.clouddocommon.utils.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,19 +36,19 @@ public class RoleController {
     }
 
     @PostMapping
-    R save(@RequestBody RoleDO roleDO){
+    ResponseResult save(@RequestBody RoleDO roleDO){
         if(roleService.save(roleDO)>0){
-            return R.ok();
+            return ResponseResult.ok();
         }
-        return R.error();
+        return ResponseResult.error();
     }
 
     @PutMapping
-    R update(@RequestBody RoleDO roleDO){
+    ResponseResult update(@RequestBody RoleDO roleDO){
         if(roleService.update(roleDO)>0){
-            return R.ok();
+            return ResponseResult.ok();
         }
-        return R.error();
+        return ResponseResult.error();
     }
 
 }

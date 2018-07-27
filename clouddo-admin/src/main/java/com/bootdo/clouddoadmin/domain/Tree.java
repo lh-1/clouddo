@@ -1,9 +1,5 @@
 package com.bootdo.clouddoadmin.domain;
 
-import com.alibaba.fastjson.JSON;
-import com.bootdo.clouddocommon.utils.R;
-
-import java.io.Serializable;
 import java.util.*;
 
 /**

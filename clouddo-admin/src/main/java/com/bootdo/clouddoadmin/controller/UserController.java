@@ -2,7 +2,6 @@ package com.bootdo.clouddoadmin.controller;
 
 import com.bootdo.clouddoadmin.domain.UserDO;
 import com.bootdo.clouddoadmin.dto.UserDTO;
-import com.bootdo.clouddoadmin.dto.UserRoleDTO;
 import com.bootdo.clouddoadmin.dto.do2dto.UserConvert;
 import com.bootdo.clouddoadmin.service.RoleService;
 import com.bootdo.clouddoadmin.service.UserService;
@@ -12,17 +11,10 @@ import com.bootdo.clouddocommon.context.FilterContextHandler;
 import com.bootdo.clouddocommon.dto.LoginUserDTO;
 import com.bootdo.clouddocommon.utils.PageUtils;
 import com.bootdo.clouddocommon.utils.Query;
-import com.bootdo.clouddocommon.utils.R;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.BeanUtils;
+import com.bootdo.clouddocommon.utils.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,9 +49,9 @@ public class UserController extends BaseController {
 	 * @return
 	 */
     @GetMapping("{id}")
-	R get(@PathVariable("id") Long id ){
+    ResponseResult get(@PathVariable("id") Long id ){
 		UserDTO userDTO = UserConvert.MAPPER.do2dto(userService.get(id));
-    	return R.ok().put("data",userDTO);
+    	return ResponseResult.ok().put("data",userDTO);
 	}
 
 	/**
@@ -69,12 +61,12 @@ public class UserController extends BaseController {
 	 */
 	@Log("获取用户列表")
     @GetMapping()
-    R listByPage(@RequestParam Map<String, Object> params) {
+    ResponseResult listByPage(@RequestParam Map<String, Object> params) {
         Query query = new Query(params);
         List<UserDTO> userDTOS = UserConvert.MAPPER.dos2dtos((userService.list(query)));
         int total = userService.count(query);
         PageUtils pageUtil = new PageUtils(userDTOS, total);
-        return R.ok().put("page",pageUtil);
+        return ResponseResult.ok().put("page",pageUtil);
     }
 
 	/**
@@ -83,9 +75,9 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PostMapping()
-    R save(@RequestBody UserDO user) {
+    ResponseResult save(@RequestBody UserDO user) {
 		user.setPassword(MD5Utils.encrypt(user.getUsername(), user.getPassword()));
-		return R.operate(userService.save(user) > 0);
+		return ResponseResult.operate(userService.save(user) > 0);
 	}
 
 	/**
@@ -94,8 +86,8 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PutMapping()
-	R update(@RequestBody UserDO user) {
-		return R.operate(userService.update(user) > 0);
+    ResponseResult update(@RequestBody UserDO user) {
+		return ResponseResult.operate(userService.update(user) > 0);
 	}
 
 
@@ -105,18 +97,18 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@DeleteMapping()
-	R remove( Long id) {
-		return R.operate (userService.remove(id) > 0);
+    ResponseResult remove(Long id) {
+		return ResponseResult.operate (userService.remove(id) > 0);
 	}
 
 	@PostMapping("/batchRemove")
 	@ResponseBody
-	R batchRemove(@RequestParam("ids[]") Long[] userIds) {
+    ResponseResult batchRemove(@RequestParam("ids[]") Long[] userIds) {
 		int r = userService.batchremove(userIds);
 		if (r > 0) {
-			return R.ok();
+			return ResponseResult.ok();
 		}
-		return R.error();
+		return ResponseResult.error();
 	}
 
 	@PostMapping("/exits")
